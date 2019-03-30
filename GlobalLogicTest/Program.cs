@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-﻿
-=======
 
->>>>>>> 3eb81bd83a131142ec8af1bab562ebb00aadb42a
 
 using Newtonsoft.Json;
 using System;
