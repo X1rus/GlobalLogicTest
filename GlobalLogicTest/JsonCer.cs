@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 namespace GlobalLogicTest
 {
     [DataContract]
-    public class Folder
+    public class Folder //initial folders
     {
         [DataMember]
         public string FolderName { get; set; }
@@ -26,7 +26,7 @@ namespace GlobalLogicTest
         }
     }
     [DataContract]
-    public class File
+    public class File //initial files
     {
         [DataMember]
         public string FileName { get; set; }

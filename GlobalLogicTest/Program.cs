@@ -1,88 +1,4 @@
-﻿/*  Решение должно позволить выбрать любую папку из файловой системы.
-
-Чем выбранная папка должна быть преобразована в JSON.
-
-Файл JSON должен содержать имя и дату создания выбранной папки.
-Если папка имеет вложенные папки, то для каждой из подпапок должна присутствовать одна и та же информация.
-Если папка имеет файлы внутри, то должно присутствовать имя файла, размер и полный путь для каждого из подфайлов:
-
-Input example : "D:\Projects"
- 
-Output example: 
- 
-{
- 
-    "Name": "Projects",
- 
-    "DateCreated": "10-Jun-18 5:59 PM",
- 
-    "Files": [
- 
-      {
- 
-        "Name": "Test.txt",
- 
-        "Size": "27 B",
- 
-        "Path": "D:\\Projects\\Test.txt"
- 
-      },
- 
-      ...
- 
-    ],
- 
-    "Children": [
- 
-                   {
- 
-            "Name": "SubProjects",
- 
-            "DateCreated": "10-Jun-18 5:59 PM",
- 
-            "Files": [
- 
-                {
- 
-                  "Name": "SubTest.txt",
- 
-                  "Size": "2 B",
- 
-                  "Path": "D:\\Projects\\SubProjects\\SubTest.txt"
- 
-                },
- 
-                ...
- 
-            ],
- 
-            "Children": [ 
- 
-                              ....
- 
-                          ]
- 
-        },
- 
-        {
- 
-            "Name": "SubProjects3",
- 
-            "DateCreated": "10-Jun-18 5:59 PM",
- 
-            "Files": [],
- 
-            "Children": []
- 
-        },
- 
-        ...
- 
-    ]
- 
-}
-
-*/
+﻿
 
 using Newtonsoft.Json;
 using System;
@@ -101,28 +17,36 @@ namespace GlobalLogicTest
         static void Main(string[] args)
         {
             Console.WriteLine("Enter path");
-            string dirName = Console.ReadLine();
+            string dirPath;
+
+            do
+            {
+                dirPath = Console.ReadLine(); //enter path
+                if (!string.IsNullOrWhiteSpace(dirPath)) break;
+                Console.WriteLine("Enter path");
+            } while (true);
+          
 
 
             Folder folder = new Folder();
             File file = new File();
-            List<Folder> listFolder = new List<Folder>();
-            List<File> listFile = new List<File>();
+            List<Folder> listFolder = new List<Folder>();// create folders list
+            List<File> listFile = new List<File>();//create files list
 
-            if (Directory.Exists(dirName))
+            if (Directory.Exists(dirPath))// checked directory
             {
 
-                string[] dirs = Directory.GetDirectories(dirName);
-                DirectoryInfo dirInfo = new DirectoryInfo(dirName);
+                string[] dirs = Directory.GetDirectories(dirPath);
+                DirectoryInfo dirInfo = new DirectoryInfo(dirPath);
 
-                listFolder.Add(new Folder(dirInfo.Name, Convert.ToString(dirInfo.CreationTime)));
+                listFolder.Add(new Folder(dirInfo.Name, Convert.ToString(dirInfo.CreationTime)));// add first path element 
 
                 Console.WriteLine("Folders:");
                
-                foreach (string s in dirs)
+                foreach (string s in dirs)//initial folders list 
                 {
                     dirInfo = new DirectoryInfo(s);
-                    Console.WriteLine($"Folder Name: {dirInfo.Name}   Creation Time: {dirInfo.CreationTime}      Path: {dirInfo.FullName}");
+                    Console.WriteLine($"Folder Name: {dirInfo.Name}    |   Creation Time: {dirInfo.CreationTime}   |   Path: {dirInfo.FullName}");
                     folder.FolderName = dirInfo.Name;
                     folder.DateCreate = Convert.ToString(dirInfo.CreationTime);
 
@@ -133,9 +57,9 @@ namespace GlobalLogicTest
                 }
                 Console.WriteLine();
                 Console.WriteLine("Files:");
-                string[] files = Directory.GetFiles(dirName);
-                FileInfo fileinfo = new FileInfo(dirName);
-                foreach (string s in files)
+                string[] files = Directory.GetFiles(dirPath);
+                FileInfo fileinfo = new FileInfo(dirPath);
+                foreach (string s in files)// initial files list
                 {
                     fileinfo = new FileInfo(s);
                     Console.WriteLine($"File Name: {fileinfo.Name}  |   Creation Time: {fileinfo.Length} B |   Path: {fileinfo.FullName} ");
@@ -152,11 +76,11 @@ namespace GlobalLogicTest
 
             }
 
-            DataContractJsonSerializer jsonFormatterFolder = new DataContractJsonSerializer(typeof(List<Folder>));
-            DataContractJsonSerializer jsonFormatterFile = new DataContractJsonSerializer(typeof(List<File>));
+            DataContractJsonSerializer jsonFormatterFolder = new DataContractJsonSerializer(typeof(List<Folder>));//json contract for folders
+            DataContractJsonSerializer jsonFormatterFile = new DataContractJsonSerializer(typeof(List<File>));//json contract for files
           
 
-            using (FileStream fs = new FileStream("FoldersAndFiles.json", FileMode.Create))
+            using (FileStream fs = new FileStream("FoldersAndFiles.json", FileMode.Create)) // add stream in json files
             {
                 jsonFormatterFolder.WriteObject(fs, listFolder);
                 jsonFormatterFile.WriteObject(fs,listFile);
