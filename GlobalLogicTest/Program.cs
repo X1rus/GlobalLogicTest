@@ -16,7 +16,7 @@ namespace GlobalLogicTest
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter path");
+            Console.WriteLine("Enter path: (example: c:\\)  ");
             string dirPath;
 
             do
